@@ -23,10 +23,12 @@ Account Payment Mode
     :target: https://runbot.odoo-community.org/runbot/173/15.0
     :alt: Try me on Runbot
 
-|badge1| |badge2| |badge3| |badge4| |badge5| 
+|badge1| |badge2| |badge3| |badge4| |badge5|
 
 This module adds a new object *account.payment.mode*, that is used to better
 classify and route incoming/outgoing payment orders with the banks.
+
+该模块添加了一个新对象 account.payment.mode，用于更好地分类和路由银行收到的付款订单。
 
 **Table of contents**
 

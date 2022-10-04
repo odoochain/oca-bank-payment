@@ -23,7 +23,7 @@ Account Banking PAIN Base Module
     :target: https://runbot.odoo-community.org/runbot/173/15.0
     :alt: Try me on Runbot
 
-|badge1| |badge2| |badge3| |badge4| |badge5| 
+|badge1| |badge2| |badge3| |badge4| |badge5|
 
 This module contains fields and functions that are used by the module for SEPA
 Credit Transfer (account_banking_sepa_credit_transfer) and SEPA Direct Debit
@@ -32,6 +32,10 @@ functionality by itself.
 
 This module was started during the Akretion-Noviat code sprint of November
 21st 2013 in Epiais les Louvres (France).
+
+此模块包含模块用于 SEPA 信用转账 (account_banking_sepa_credit_transfer) 和 SEPA 直接借记 (account_banking_sepa_direct_debit) 的字段和函数。
+
+该模块本身不提供任何功能。该模块于 2013 年 11 月 21 日在 Epiais les Louvres（法国）的 Akretion-Noviat 代码冲刺期间启动。
 
 **Table of contents**
 

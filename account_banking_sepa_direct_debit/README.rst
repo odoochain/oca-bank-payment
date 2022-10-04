@@ -23,7 +23,7 @@ Account Banking SEPA Direct Debit
     :target: https://runbot.odoo-community.org/runbot/173/15.0
     :alt: Try me on Runbot
 
-|badge1| |badge2| |badge3| |badge4| |badge5| 
+|badge1| |badge2| |badge3| |badge4| |badge5|
 
 Create SEPA files for Direct Debit
 
@@ -39,6 +39,13 @@ The Implementation Guidelines for SEPA Direct Debit published by the European
 Payments Council (http://http://www.europeanpaymentscouncil.eu) use PAIN
 version 008.001.02. So if you don't know which version your bank supports, you
 should try version 008.001.02 first.
+
+为直接借记模块创建 SEPA 文件，以 SEPA XML 文件格式导出直接借记付款订单。 SEPA PAIN (PAyment INitiation) 是客户到银行支付指令的新欧洲标准。
+该模块实现 SEPA 直接借记 (SDD)，更具体地说是 PAIN 版本 008.001.02、008.001.03 和 008.001.04。
+它是 ISO 20022 标准的一部分，可在 http:www.iso20022.org 上找到。
+
+欧洲支付委员会 (http:http:www.europeanpaymentsscouncil.eu) 发布的 SEPA 直接借记实施指南使用 PAIN 版本 008.001.02。
+所以如果你不知道你的银行支持哪个版本，你应该先尝试008.001.02版本。
 
 **Table of contents**
 

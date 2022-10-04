@@ -23,7 +23,7 @@ Account Payment Purchase
     :target: https://runbot.odoo-community.org/runbot/173/15.0
     :alt: Try me on Runbot
 
-|badge1| |badge2| |badge3| |badge4| |badge5| 
+|badge1| |badge2| |badge3| |badge4| |badge5|
 
 This module adds 2 fields on purchase orders: *Bank Account* and *Payment
 Mode*. These fields are copied from partner to purchase order and then from
@@ -33,6 +33,15 @@ This module is similar to the *purchase_payment* module; the main difference
 is that it doesn't depend on the *account_payment_extension* module (it's not
 the only module to conflict with *account_payment_extension*; all the SEPA
 modules in the banking addons conflict with *account_payment_extension*).
+
+该模块在采购订单上增加了 2 个字段：银行账户和付款方式。这些字段从合作伙伴复制到采购订单，然后从采购订单复制到供应商发票。
+
+该模块类似于 purchase_payment 模块；
+
+主要区别在于它不依赖于 account_payment_extension 模块（它不是唯一与 account_payment_extension 冲突的模块；
+
+银行插件中的所有 SEPA 模块都与 account_payment_extension 冲突）。
+
 
 **Table of contents**
 
