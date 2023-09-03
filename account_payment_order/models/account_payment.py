@@ -1,11 +1,17 @@
 # Copyright 2019 ACSONE SA/NV
+# Copyright 2022 Tecnativa - Pedro M. Baeza
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo import api, models
+from odoo import api, fields, models
 
 
 class AccountPayment(models.Model):
     _inherit = "account.payment"
+
+    payment_order_id = fields.Many2one(comodel_name="account.payment.order")
+    payment_line_ids = fields.Many2many(comodel_name="account.payment.line")
+    # Compatibility with previous approach for returns - To be removed on v16
+    old_bank_payment_line_name = fields.Char()
 
     def _get_default_journal(self):
         res = super()._get_default_journal()
@@ -20,7 +26,7 @@ class AccountPayment(models.Model):
                     pay.payment_type
                 ).filtered(lambda x: not x.payment_method_id.payment_order_only)
             )
-            to_exclude = self._get_payment_method_codes_to_exclude()
+            to_exclude = pay._get_payment_method_codes_to_exclude()
             if to_exclude:
                 pay.available_payment_method_line_ids = (
                     pay.available_payment_method_line_ids.filtered(

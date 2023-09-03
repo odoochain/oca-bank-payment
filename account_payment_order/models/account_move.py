@@ -57,29 +57,42 @@ class AccountMove(models.Model):
         for move in self:
             if move.state != "posted":
                 raise UserError(_("The invoice %s is not in Posted state") % move.name)
-            applicable_lines = move.line_ids.filtered(
+            pre_applicable_lines = move.line_ids.filtered(
                 lambda x: (
                     not x.reconciled
-                    and x.payment_mode_id.payment_order_ok
                     and x.account_id.internal_type in ("receivable", "payable")
-                    and not any(
-                        p_state in ("draft", "open", "generated")
-                        for p_state in x.payment_line_ids.mapped("state")
-                    )
                 )
+            )
+            if not pre_applicable_lines:
+                raise UserError(_("No pending AR/AP lines to add on %s") % move.name)
+            payment_modes = pre_applicable_lines.mapped("payment_mode_id")
+            if not payment_modes:
+                raise UserError(_("No Payment Mode on invoice %s") % move.name)
+            applicable_lines = pre_applicable_lines.filtered(
+                lambda x: x.payment_mode_id.payment_order_ok
             )
             if not applicable_lines:
                 raise UserError(
                     _(
                         "No Payment Line created for invoice %s because "
-                        "it already exists or because this invoice is "
-                        "already paid."
+                        "its payment mode is not intended for payment orders."
                     )
                     % move.name
                 )
-            payment_modes = applicable_lines.mapped("payment_mode_id")
-            if not payment_modes:
-                raise UserError(_("No Payment Mode on invoice %s") % move.name)
+            payment_lines = applicable_lines.payment_line_ids.filtered(
+                lambda l: l.state in ("draft", "open", "generated")
+            )
+            if payment_lines:
+                raise UserError(
+                    _(
+                        "The invoice %(move)s is already added in the payment "
+                        "order(s) %(order)s."
+                    )
+                    % {
+                        "move": move.name,
+                        "order": payment_lines.order_id.mapped("name"),
+                    }
+                )
             for payment_mode in payment_modes:
                 payorder = apoo.search(
                     move.get_account_payment_domain(payment_mode), limit=1
@@ -102,8 +115,11 @@ class AccountMove(models.Model):
                     move.message_post(
                         body=_(
                             "%(count)d payment lines added to the new draft payment "
-                            "order %(name)s which has been automatically created.",
+                            "order <a href=# data-oe-model=account.payment.order "
+                            "data-oe-id=%(order_id)d>%(name)s</a>, which has been "
+                            "automatically created.",
                             count=count,
+                            order_id=payorder.id,
                             name=payorder.name,
                         )
                     )
@@ -111,8 +127,11 @@ class AccountMove(models.Model):
                     move.message_post(
                         body=_(
                             "%(count)d payment lines added to the existing draft "
-                            "payment order %(name)s.",
+                            "payment order "
+                            "<a href=# data-oe-model=account.payment.order "
+                            "data-oe-id=%(order_id)d>%(name)s</a>.",
                             count=count,
+                            order_id=payorder.id,
                             name=payorder.name,
                         )
                     )
