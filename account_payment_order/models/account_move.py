@@ -27,6 +27,7 @@ class AccountMove(models.Model):
         states={"draft": [("readonly", False)]},
         default="none",
     )
+    payment_line_count = fields.Integer(compute="_compute_payment_line_count")
 
     @api.depends("payment_mode_id", "line_ids", "line_ids.payment_mode_id")
     def _compute_payment_order_ok(self):
@@ -37,6 +38,64 @@ class AccountMove(models.Model):
             if not payment_mode:
                 payment_mode = move.payment_mode_id
             move.payment_order_ok = payment_mode.payment_order_ok
+
+    def _compute_payment_line_count(self):
+        for move in self:
+            move.payment_line_count = len(
+                self.env["account.payment.line"]._search(
+                    [("move_line_id", "in", self.line_ids.ids)]
+                )
+            )
+
+    def _get_payment_order_communication_direct(self):
+        """Retrieve the communication string for this direct item."""
+        communication = self.payment_reference or self.ref or self.name
+        if self.is_invoice():
+            if (self.reference_type or "none") != "none":
+                communication = self.ref
+            elif self.is_purchase_document():
+                communication = self.ref or self.payment_reference
+            else:
+                communication = self.payment_reference or self.name
+        return communication or ""
+
+    def _get_payment_order_communication_full(self):
+        """Retrieve the full communication string for the payment order.
+        Reversal moves and partial payments references added.
+        Avoid having everything in the same method to avoid infinite recursion
+        with partial payments.
+        """
+        communication = self._get_payment_order_communication_direct()
+        references = []
+        # Build a recordset to gather moves from which references have already
+        # taken in order to avoid duplicates
+        reference_moves = self.env["account.move"].browse()
+        # If we have credit note(s) - reversal_move_id is a one2many
+        if self.reversal_move_id:
+            references.extend(
+                [
+                    move._get_payment_order_communication_direct()
+                    for move in self.reversal_move_id
+                ]
+            )
+            reference_moves |= self.reversal_move_id
+        # Retrieve partial payments - e.g.: manual credit notes
+        (
+            invoice_partials,
+            exchange_diff_moves,
+        ) = self._get_reconciled_invoices_partials()
+        for (_x, _y, payment_move_line,) in (
+            invoice_partials + exchange_diff_moves
+        ):
+            payment_move = payment_move_line.move_id
+            if payment_move not in reference_moves:
+                references.append(
+                    payment_move._get_payment_order_communication_direct()
+                )
+        # Add references to communication from lines move
+        if references:
+            communication += " " + " ".join(references)
+        return communication
 
     def _prepare_new_payment_order(self, payment_mode=None):
         self.ensure_one()
@@ -156,4 +215,21 @@ class AccountMove(models.Model):
                     "views": False,
                 }
             )
+        return action
+
+    def action_payment_lines(self):
+        self.ensure_one()
+        action = self.env["ir.actions.act_window"]._for_xml_id(
+            "account_payment_order.account_payment_line_action"
+        )
+        action.update(
+            {
+                "domain": [("move_line_id", "in", self.line_ids.ids)],
+                "context": dict(
+                    self.env.context,
+                    account_payment_line_main_view=1,
+                    form_view_ref="account_payment_order.account_payment_line_form_readonly",
+                ),
+            }
+        )
         return action

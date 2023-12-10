@@ -210,6 +210,11 @@ msgid "Bank Account Required"
 msgstr "Se requiere una cuenta bancaria"
 
 #. module: account_payment_order
+#: model:ir.model.fields,field_description:account_payment_order.field_account_payment_line__partner_bank_acc_type
+msgid "Bank Account Type"
+msgstr ""
+
+#. module: account_payment_order
 #: model:ir.model.fields,field_description:account_payment_order.field_account_payment_order__journal_id
 #: model_terms:ir.ui.view,arch_db:account_payment_order.account_payment_order_search
 msgid "Bank Journal"
@@ -219,6 +224,12 @@ msgstr "Diario de Banco"
 #: model:ir.model.fields,help:account_payment_order.field_account_move_line__partner_bank_id
 msgid "Bank account on which we should pay the supplier"
 msgstr "Cuenta bancaria en la que debemos pagar al proveedor"
+
+#. module: account_payment_order
+#: model:ir.model.fields,help:account_payment_order.field_account_payment_line__partner_bank_acc_type
+msgid ""
+"Bank account type: Normal or IBAN. Inferred from the bank account number."
+msgstr ""
 
 #. module: account_payment_order
 #: model:ir.model.fields.selection,name:account_payment_order.selection__account_payment_order__state__cancel
@@ -536,7 +547,6 @@ msgstr "Si está marcado, los mensajes nuevos requieren su atención."
 
 #. module: account_payment_order
 #: model:ir.model.fields,help:account_payment_order.field_account_payment_order__message_has_error
-#: model:ir.model.fields,help:account_payment_order.field_account_payment_order__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
 msgstr "Si está marcado, algunos mensajes tienen un error de entrega."
 
@@ -899,9 +909,17 @@ msgid "Payment Line"
 msgstr ""
 
 #. module: account_payment_order
+#: model:ir.model.fields,field_description:account_payment_order.field_account_bank_statement_line__payment_line_count
+#: model:ir.model.fields,field_description:account_payment_order.field_account_move__payment_line_count
+#: model:ir.model.fields,field_description:account_payment_order.field_account_payment__payment_line_count
+msgid "Payment Line Count"
+msgstr ""
+
+#. module: account_payment_order
 #: model:ir.actions.act_window,name:account_payment_order.account_payment_line_action
 #: model:ir.model,name:account_payment_order.model_account_payment_line
 #: model_terms:ir.ui.view,arch_db:account_payment_order.account_payment_line_form
+#: model_terms:ir.ui.view,arch_db:account_payment_order.view_move_form
 msgid "Payment Lines"
 msgstr "Líneas de pago"
 
@@ -944,6 +962,11 @@ msgstr "Modos de pago"
 #: model_terms:ir.ui.view,arch_db:account_payment_order.print_account_payment_order_document
 msgid "Payment Order"
 msgstr "Pago de Nómina"
+
+#. module: account_payment_order
+#: model_terms:ir.ui.view,arch_db:account_payment_order.view_move_form
+msgid "Payment Order Lines"
+msgstr ""
 
 #. module: account_payment_order
 #: model:ir.model.fields,field_description:account_payment_order.field_account_bank_statement_line__payment_order_ok
@@ -1009,11 +1032,6 @@ msgstr "Tipo de Referencia"
 #: model:ir.model.fields,field_description:account_payment_order.field_account_payment_order__activity_user_id
 msgid "Responsible User"
 msgstr ""
-
-#. module: account_payment_order
-#: model:ir.model.fields,field_description:account_payment_order.field_account_payment_order__message_has_sms_error
-msgid "SMS Delivery error"
-msgstr "Error de entrega de SMS"
 
 #. module: account_payment_order
 #: model:ir.model.fields.selection,name:account_payment_order.selection__account_payment_line_create__payment_mode__same
@@ -1271,6 +1289,9 @@ msgstr "en"
 msgid "otherwise, new payment orders will be created (one per payment mode)."
 msgstr ""
 "de lo contrario, se crearán nuevos pagos de nómina (una por modo de pago)."
+
+#~ msgid "SMS Delivery error"
+#~ msgstr "Error de entrega de SMS"
 
 #~ msgid "Number of messages which requires an action"
 #~ msgstr "Número de mensajes que requieren alguna acción"
